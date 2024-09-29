@@ -1,21 +1,53 @@
-# import numpy as np
-# from constants import compounds_dict
-# R = 1.987
-#
-#
-# compound = 'Оксид углеродa'
-# t = 200 # ЦЕЛЬСИЙ, НЕ КЕЛЬВИНОВ
-# c = 3 # проц объёма
-# tau = 3 # с
-#
-#
-# constants = compounds_dict['Оксид углеродa']
-
-# sfgwjsfiwejroijweoijrg
+import numpy as np
+from constants import compounds_dict
+import mat_models
+# from scipy.integrate import solve_ivp
+R = 1.987
 
 
+# предположим, что следующие значения ввёл пользователь
+compound = 'Оксид углеродa'
+t = 200 + 273.15  # КЕЛЬВИНОВ, НЕ ЦЕЛЬСИЙ
+c = 3 * 0.01  # проц объёма
+tau = 3  # секунды
 
+# Для начала инициализируем всё (а может быть пока что и не всё) что нужно:
 
+# Начальная концентрация, которую нужно будет запомнить
+c_start = c
+
+# Константы, согласно выбранному соединению
+constants = list(compounds_dict[compound].values())
+print(constants[1], constants[2])
+
+# Температура адибатического разогрева
+ad_raz = constants[0]
+
+# шаг по координате
+step = 0.005  # пусть пока будет такой
+
+# Определение формулы расчёта скорости:
+if compound == 'Оксид углеродa':
+    velocity_eq = mat_models.CO_velocity
+elif compound in {'Акролеин', 'Этилацетат', 'Уксусная кислота'}:
+    velocity_eq = mat_models.AEU_velocity
+else:
+    velocity_eq = mat_models.others_velocity
+
+# Попытка написать кастомный метод Рунгге-Кутта (или как там правильно его имя пишется)
+# для конкретно этой задачи, наша независимая переменная - КООРДИНАТА и по ней мы шагаем,
+# то есть это своего рода значение оси абсцисс, а изменяется у нас всё остальное, функция должна
+# будет принимать начальные значения концентрации, температуры, уравнение расчёта скорости, начальное время
+# пример одной итерации функции:
+
+# расчёт скорости:
+w = velocity_eq(c, t, constants)
+print(w)
+
+del_c = -tau * w  # предположительно изменение концентрации
+print(del_c)
+с = c_start + del_c
+print(с)
 
 
 
