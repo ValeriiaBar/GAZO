@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 R = 1.987
 
 # предположим, что следующие значения ввёл пользователь
-compound = 'Оксид углеродa'
+compound = 'Декан'
 t = 200 + 273.15  # КЕЛЬВИНОВ, НЕ ЦЕЛЬСИЙ
 c = 3  # доли объёма
-tau = 3  # секунды
+tau = 0.03  # секунды
 X = 0  # степень превращения
 
 # Для начала инициализируем всё (а может быть пока что и не всё) что нужно:
@@ -81,7 +81,8 @@ max_step = 0.01    # Максимальное значение шага
 threshold_increase = 0.00002  # Порог для увеличения шага
 threshold_decrease = 0.00004
 
-while coord < 1:
+while coord < 1 and c > 0:
+# for i in coord_range:
     c_previous = result[-1][2]
     t_previous = result[-1][1]
 
@@ -138,6 +139,8 @@ while coord < 1:
     elif concentration_change < threshold_increase and step < max_step:
         # Увеличиваем шаг, если изменение концентрации слишком маленькое
         step *= 2
+
+    # print(f'координата: {coord}, концентрация: {c}\n', '-' * 30)
 
     result.append(tuple(map(custom_round, (coord, t - 273.15, c, X, tau_current))))  # точка Е
 
