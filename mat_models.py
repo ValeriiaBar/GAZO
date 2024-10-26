@@ -10,7 +10,8 @@ def CO_velocity(c: float,  # "концентрация",
     температуры и концентрации"""
     if c < 1e-10:
         # c = 0,
-        w = 0,
+        w = 0
+        return w
     else:
         w = pow(c, 0.69) * constants[1] * math.exp(constants[2] / (1.987 * temp))
     return w
@@ -26,7 +27,7 @@ def AEU_velocity(c: float,  # "концентрация"
      в зависимости от температуры и концентрации"""
     if c < 1e-10:
         # c = 0,
-        w = 0,
+        w = 0
     else:
         w = (c * constants[1] * math.exp(constants[2] / (1.987 * temp))) / \
             (1 + constants[3] * math.exp(constants[4] / (1.987 * temp)) * c)
@@ -42,11 +43,14 @@ def others_velocity(c: float,  # "концентрация"
      и концентрации"""
     if c < 1e-10:
         # c = 0,
-        w = 0,
+        w = 0
     else:
         w = c * constants[1] * math.exp(constants[2] / (1.987 * temp))
     return w
 
+
+def custom_round(arg, prec=6):
+    return round(arg, prec)
 
 
 
