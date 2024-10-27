@@ -1,4 +1,6 @@
 import math
+import numpy as np
+print(np.linspace(1, 10, 10, dtype=np.uint32))
 
 # Словарь с константами для различных соединений
 compounds_dict = {'Оксид углеродa': {'ad_raz': 91, 'c1': 600, 'c2': -7600, 'c3': None, 'c4': None},
