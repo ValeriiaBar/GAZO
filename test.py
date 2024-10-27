@@ -35,7 +35,7 @@ max_step = 0.01    # Максимальное значение шага
 threshold_increase = 0.00002  # Порог для увеличения шага
 threshold_decrease = 0.00004
 
-result = np.array([[coord, t, c, X, tau * coord]])
+result = np.array([[coord, t - 273.15, c, X, tau * coord]])
 
 while coord < 1 and c > 0:
     c_previous = result[-1][2]
@@ -43,12 +43,11 @@ while coord < 1 and c > 0:
 
     # k1 расчёт
     w_k1 = velocity_eq(c, t, constants)
-
     c_del = -tau * (step/2) * w_k1
     t_del = -c_del * ad_raz
     # Точка B
     c_k1 = c_previous + c_del
-    t_k1 = t_previous + t_del
+    t_k1 = t_previous + t_del + 273.15
 
     # k2 расчёт
     w_k2 = velocity_eq(c_k1, t_k1, constants)
@@ -56,7 +55,7 @@ while coord < 1 and c > 0:
     t_del = -c_del * ad_raz
     # точка C
     c_k2 = c_previous + c_del
-    t_k2 = t_previous + t_del  # Кельвины
+    t_k2 = t_previous + t_del + 273.15
 
     # k3 расчёт
     w_k3 = velocity_eq(c_k2, t_k2, constants)
@@ -64,7 +63,7 @@ while coord < 1 and c > 0:
     t_del = -c_del * ad_raz
     # точка D
     c_k3 = c_previous + c_del
-    t_k3 = t_previous + t_del  # Кельвины
+    t_k3 = t_previous + t_del + 273.15
 
     # k4 расчёт
     w_k4 = velocity_eq(c_k3, t_k3, constants)
@@ -74,7 +73,7 @@ while coord < 1 and c > 0:
     c_del = -tau * step * w_final
     t_del = -c_del * ad_raz
     c = c_previous + c_del  # конечная концентрация
-    t = t_previous + t_del  # конечная температура Кельвины
+    t = t_previous + t_del + 273.15  # конечная температура
     X = (c_start - c)/c_start
     coord = coord + step
     tau_current = tau * coord
@@ -88,19 +87,51 @@ while coord < 1 and c > 0:
         # Увеличиваем шаг, если изменение концентрации слишком маленькое
         step *= 2
 
-    result = np.vstack((result, np.array(list(map(custom_round, (coord, t, c, X, tau_current))))))
+    result = np.vstack((result, np.array(list(map(custom_round, (coord, t - 273.15, c, X, tau_current))))))
 
-if result[-1][0] > 1:  # достаточно топорное решение проблемы
-    # того, что последняя расчётная координата может быть больше 1, тем не менее...
+
+
+if result[-1][0] > 1:  # достаточно топорное решение проблемы, когда последняя координата больше 1, тем не менее...
     result = result[:-1]
 
 result = np.array([result[i] for i in
-                   np.linspace(0, len(result) - 1, 12, dtype=np.int64)])  # равноудалённое распределение
-# значений координат
-
-result[:, 1] -= 273.15  # перевод Кельвинов в цельсии
+                   np.linspace(0, len(result) - 1, 12, dtype=np.int64)])  # равноудалённое распределение значений координат
 
 print(result)
 
 # pprint(result)
 # pprint(final_result)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
