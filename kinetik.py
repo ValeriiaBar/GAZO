@@ -1,4 +1,5 @@
 import math
+from functools import wraps
 
 
 def CO_velocity(c: float,  # "концентрация",
@@ -33,9 +34,9 @@ def AEU_velocity(c: float,  # "концентрация"
 
 
 def others_velocity(c: float,  # "концентрация"
-                 temp: float,  # "температура"
-                 constants: 'sequence',  # "список с константами, которые используются в уравнении Аррениуса
-                 ) -> float:
+                    temp: float,  # "температура"
+                    constants: 'sequence',  # "список с константами, которые используются в уравнении Аррениуса
+                    ) -> float:
     """Функция вычисления скорости р-ции остальных соединений;
      возвращает скорость реакции, в зависимости от температуры
      и концентрации"""
@@ -46,13 +47,19 @@ def others_velocity(c: float,  # "концентрация"
     return w
 
 
-def custom_round(arg, prec=6):
+def constants_fixator(kinetic_eq,  # кинетическое уравнение (CO_velocity, AEU_velocity или others_velocity)
+                      constants_  # нужные константы из compounds_dict (см модуль constants)
+                      ):
+    """Этот декоратор нужен исключительно для того, чтобы запоминать константы
+     для соответствующего кинетического уравнения, согласно выбранному элементу
+     (смотри уравнения расчёта скорости выше)"""
+
+    @wraps(kinetic_eq)
+    def inner(*args, **kwargs):
+        return kinetic_eq(*args, constants=constants_, **kwargs, )
+
+    return inner
+
+
+def custom_round(arg, prec=8):
     return round(arg, prec)
-
-
-
-
-
-
-
-
